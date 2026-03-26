@@ -11,6 +11,7 @@ import JimengAI from './components/JimengAI';
 import UserGuide from './components/UserGuide';
 import AffiliateVeo3Module from './components/AffiliateVeo3Module';
 import Login from './components/Login';
+import ApiKeyManager from './components/ApiKeyManager';
 import { Character, GeneratedData, Theme, StyleOption, ScriptTone } from './types';
 import { generateScriptAndPrompts, suggestTopic, suggestSituations } from './services/geminiService';
 
@@ -82,6 +83,7 @@ const App = () => {
       return false;
     }
   });
+  const [showApiKeyManager, setShowApiKeyManager] = useState(false);
   const [activeModule, setActiveModule] = useState<'script' | 'tts' | 'vision' | 'tryon' | 'jimeng' | 'guide' | 'affiliate_veo3'>(() => {
     try {
       const saved = localStorage.getItem('activeModule');
@@ -369,7 +371,7 @@ const App = () => {
   const [showResetModal, setShowResetModal] = useState(false);
 
   const handleReset = () => {
-    const keysToKeep = ['isLoggedIn'];
+    const keysToKeep = ['isLoggedIn', 'user_gemini_api_keys', 'user_gemini_api_key'];
     Object.keys(localStorage).forEach(key => {
       if (!keysToKeep.includes(key)) {
         localStorage.removeItem(key);
@@ -533,6 +535,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-orange-100 flex flex-col">
       <Toaster position="top-right" richColors />
+      <ApiKeyManager isOpen={showApiKeyManager} onClose={() => setShowApiKeyManager(false)} />
       <div className="no-print">
         <div className="bg-gradient-to-r from-purple-700 via-violet-600 to-fuchsia-600 text-white py-2.5 px-4 flex items-center justify-center shadow-md relative overflow-hidden">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 z-10">
@@ -665,6 +668,15 @@ const App = () => {
               
               <div className="h-4 w-px bg-slate-200 mx-1"></div>
               
+              <button 
+                onClick={() => setShowApiKeyManager(true)}
+                className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
+                title="Quản lý API Keys"
+              >
+                <Key size={18} />
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">API Keys</span>
+              </button>
+
               <button 
                 onClick={() => setShowResetModal(true)}
                 className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
